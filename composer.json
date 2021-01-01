@@ -1,0 +1,21 @@
+{
+    "name": "pitmanware/kentron-twig",
+    "description": "Twig extension for Kentron",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Ben Pitman"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "pitmanware/kentron": "^1.4.0",
+        "twig/twig": "^3.0"
+    },
+    "autoload": {
+        "psr-4" : {
+            "Kentron\\" : "src"
+        }
+    }
+}
