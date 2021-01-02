@@ -10,15 +10,15 @@ use Twig\Environment;
 
 class View
 {
-    protected $baseDirectory = "";
-    protected $frame = "index.twig";
-
+    private $index = "index.twig";
+    private $directory = "";
+    private $frame = "";
     private $title = "";
     private $data = [];
     private $scripts = [];
     private $styles = [];
 
-    private function __construct (?string $frame = null)
+    public function __construct (?string $frame = null)
     {
         $this->includeMasterScripts();
         $this->includeMasterStyles();
@@ -33,15 +33,15 @@ class View
      */
 
     /**
-     * Set the base directory for Twig
+     * Set the base directory for the index file
      *
-     * @param string $directory The path of the directory to be used
+     * @param string $directory The absolute directory path
      *
      * @throws InvalidArgumentException
      */
     public function setDirectory (string $directory): void
     {
-        $this->baseDirectory = File::getRealPath($directory);
+        $this->directory = File::getRealPath($directory);
     }
 
     public function setTitle (string $title): void
@@ -49,9 +49,14 @@ class View
         $this->title = $title;
     }
 
-    public function setFrame (string $framePath): void
+    public function setIndex (string $indexUri): void
     {
-        $this->frame = $framePath;
+        $this->index = $this->addExtension($indexUri);
+    }
+
+    public function setFrame (string $frameUri): void
+    {
+        $this->frame = $this->addExtension($frameUri);
     }
 
     public function setData ($data): void
@@ -108,6 +113,7 @@ class View
             ],
             "scripts" => $this->scripts,
             "styles" => $this->styles,
+            "frame" => $this->frame,
             "data" => $this->data
         ];
     }
@@ -137,7 +143,7 @@ class View
         $this->addData($data);
 
         return $this->init()->render(
-            $this->frame,
+            $this->index,
             $this->getProperties()
         );
     }
@@ -158,14 +164,14 @@ class View
 
     private function validate (): void
     {
-        if (!File::isDir($this->baseDirectory)) {
-            throw new \InvalidArgumentException("{$this->baseDirectory} is not a directory");
+        if (!File::isDir($this->directory)) {
+            throw new \InvalidArgumentException("{$this->directory} is not a directory");
         }
-        else if (!File::isReadable($this->baseDirectory)) {
-            throw new \InvalidArgumentException("{$this->baseDirectory} is not readable");
+        else if (!File::isReadable($this->directory)) {
+            throw new \InvalidArgumentException("{$this->directory} is not readable");
         }
 
-        $framePath = $this->baseDirectory . $this->frame;
+        $framePath = $this->directory . $this->frame;
         if (!File::isValidFile($framePath)) {
             throw new \InvalidArgumentException("{$framePath} is not a valid file");
         }
@@ -173,7 +179,12 @@ class View
 
     private function init (): Environment
     {
-        $twigLoader = new FilesystemLoader($this->baseDirectory);
+        $twigLoader = new FilesystemLoader($this->directory);
         return new Environment($twigLoader, []);
+    }
+
+    private function addExtension (string $filename): string
+    {
+        return preg_replace(['/^\/*/', '/.twig$/'], '', $filename) . ".twig";
     }
 }
