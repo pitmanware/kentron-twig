@@ -10,12 +10,18 @@
     ],
     "require": {
         "php": ">=7.2.0",
-        "pitmanware/kentron": "^1.4.0",
+        "pitmanware/kentron": "2.x-dev",
         "twig/twig": "^3.0"
     },
     "autoload": {
         "psr-4" : {
             "Kentron\\" : "src"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/pitmanware/kentron.git"
+        }
+    ]
 }
