@@ -12,7 +12,7 @@ class View
 {
     private $index = "index.twig";
     private $directory = "";
-    private $frame = "";
+    private $frame = null;
     private $title = "";
     private $data = [];
     private $scripts = [];
@@ -171,9 +171,11 @@ class View
             throw new \InvalidArgumentException("{$this->directory} is not readable");
         }
 
-        $framePath = $this->directory . $this->frame;
-        if (!File::isValidFile($framePath)) {
-            throw new \InvalidArgumentException("{$framePath} is not a valid file");
+        if (is_string($this->frame)) {
+            $framePath = $this->directory . $this->frame;
+            if (!File::isValidFile($framePath)) {
+                throw new \InvalidArgumentException("{$framePath} is not a valid file");
+            }
         }
     }
 
