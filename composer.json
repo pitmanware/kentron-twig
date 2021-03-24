@@ -1,5 +1,6 @@
 {
     "name": "pitmanware/kentron-twig",
+    "version": "2.0.1",
     "description": "Twig extension for Kentron",
     "license": "MIT",
     "minimum-stability": "stable",
